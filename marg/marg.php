@@ -29,7 +29,7 @@ class Marg {
         } elseif (function_exists($controller_name)) {
             call_user_func($controller_name, $matches);
         } else {
-            ;
+            throw new Exception;
             // raise http exception
         }
     }
