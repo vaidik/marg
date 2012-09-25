@@ -77,3 +77,6 @@ Marg::run($routes);
 
 ?>
 ```
+
+## License
+Marg was create by [Vaidik Kapoor](http://vaidikkapoor.info). It is released under MIT License.
