@@ -9,7 +9,7 @@ class Request {
 
   public function __construct() {
     $this->verb = $_SERVER['REQUEST_METHOD'];
-    $this->uri = rtrim($_SERVER['PATH_INFO'], '/');
+    $this->uri = isset($_SERVER['PATH_INFO']) ? rtrim($_SERVER['PATH_INFO'], '/') : '/';
     $this->headers = apache_request_headers();
 
     $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';

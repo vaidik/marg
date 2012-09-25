@@ -25,9 +25,9 @@ class Marg {
         $controller_name = '';
         $matches = array();
         foreach ($routes as $pattern => $controller) {
-            if (preg_match($pattern, $request->uri, $match)) {
+            if (preg_match('#^/?' . $pattern . '/?$#', $request->uri, $match)) {
                 $controller_name = $controller;
-                $matches = $match;
+                $matches = array_slice($match, 1);
                 break;
             }
         }
@@ -50,6 +50,8 @@ class Marg {
 
             if (in_array(strtoupper($request->verb), $methods)) {
                 call_user_func_array($controller_name, $matches);
+            } else {
+                raise('405');
             }
         } elseif (class_exists($controller_name)) {
             $controller = new $controller_name($matches);
@@ -85,7 +87,9 @@ function call_user_func_if_exists($func, $args = array()) {
             $retval = call_user_func_array(array($func[0], $func[1]), $args);
         }
     } else {
-        $retval = call_user_func_array($func, $args);
+        if (function_exists($func)) {
+            $retval = call_user_func_array($func, $args);
+        }
     }
     return $retval;
 }
