@@ -21,7 +21,13 @@ $routes = array(
 );
 
 function home() {
-    echo '<h1>Hello World!</h1>';
+    global $request;
+
+    if ($request->verb == 'GET') {
+        echo '<h1>Hello World!</h1>';
+    } else {
+        raise('405');
+    }
 }
 
 function Example1($num) {
@@ -31,7 +37,6 @@ function Example1($num) {
     if ($request->verb == 'POST') {
         echo 'A POST request.';
     } else {
-    error_log(addslashes('"'));
         echo 'A GET request.';
     }
 }
@@ -59,6 +64,10 @@ class Example3 {
 
 function raise_404() {
     echo '<h1>Sorry! What you are looking for does not exists. :(</h1>';
+}
+
+function raise_405() {
+    echo '<h1>405: Method Not Allowed</h1>';
 }
 
 Marg::addSetUp(function () {  echo '<html><head><title>Marg Examples</title></head><body>'; });
