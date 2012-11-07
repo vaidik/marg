@@ -58,7 +58,16 @@ class Marg {
 
             call_user_func_if_exists(array($controller, 'setUp'));
             $method = strtolower($request->verb);
-            if (method_exists($controller, $method)) {
+            if ($request->is_ajax && method_exists($controller, $method . '_ajax')) {
+                // Headers inspired by and taken from ToroPHP's code.
+                // ToroPHP on Github: https://github.com/anandkunal/ToroPHP/
+                header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+                header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+                header('Cache-Control: no-store, no-cache, must-revalidate');
+                header('Cache-Control: post-check=0, pre-check=0', false);
+                header('Pragma: no-cache');
+                call_user_func_array(array($controller, $method . '_ajax'), $matches);
+            } elseif (method_exists($controller, $method)) {
                 call_user_func_array(array($controller, $method), $matches);
             }
             call_user_func_if_exists(array($controller, 'tearDown'));

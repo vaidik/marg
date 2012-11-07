@@ -6,11 +6,13 @@ class Request {
   public $parameters;
   public $headers;
   public $uri;
+  public $is_ajax;
 
   public function __construct() {
     $this->verb = $_SERVER['REQUEST_METHOD'];
     $this->uri = isset($_SERVER['PATH_INFO']) ? rtrim($_SERVER['PATH_INFO'], '/') : '/';
     $this->headers = apache_request_headers();
+    $this->is_ajax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
 
     $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
     $this->url_elements = explode('/', $path_info);

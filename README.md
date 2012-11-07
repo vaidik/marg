@@ -25,6 +25,9 @@ function home() {
 
     if ($request->verb == 'GET') {
         echo '<h1>Hello World!</h1>';
+        if ($request->is_ajax) {
+            echo json_encode(array('message' => 'JSON works!'));
+        }
     } else {
         raise('405');
     }
@@ -59,6 +62,10 @@ class Example3 {
 
     function get() {
         echo '<h1>Example 3!</h1>';
+    }
+
+    function get_ajax() {
+        echo '<h1>Example 3 - AJAX Request!</h1>';
     }
 };
 
