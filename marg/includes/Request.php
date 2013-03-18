@@ -1,5 +1,22 @@
 <?php
 
+/**
+ * If getallheaders() does not exist, then use one of our own. It does not
+ * exist on many shared hostings.
+ */
+if (!function_exists('getallheaders')) {
+    function getallheaders() {
+       $headers = '';
+
+       foreach ($_SERVER as $name => $value) {
+           if (substr($name, 0, 5) == 'HTTP_') {
+               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+           }
+       }
+       return $headers;
+    }
+}
+
 class Request {
   public $url_elements;
   public $verb;
@@ -10,16 +27,16 @@ class Request {
 
   public function __construct() {
     $this->verb = $_SERVER['REQUEST_METHOD'];
-    $this->uri = isset($_SERVER['PATH_INFO']) ? rtrim($_SERVER['PATH_INFO'], '/') : '/';
-    $this->headers = apache_request_headers();
+    $this->headers = getallheaders();
     $this->is_ajax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
 
     $path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/';
-    $this->url_elements = explode('/', $path_info);
-    array_shift($this->url_elements);
 
     // parse the request for query params and request-content
     $this->parseIncomingParams();
+
+    $this->uri = '/' . $_GET['url'];
+    $this->url_elements = explode('/', $_GET['url']);
   }
 
   // get URL element at a specific position
